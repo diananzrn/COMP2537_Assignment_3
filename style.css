@@ -1,51 +1,201 @@
+:root {
+  /* Default theme */
+  --bg-color: #f4f4f4;
+  --text-color: #333;
+  --primary: #eecf4f;
+  --secondary: #3d7dca;
+  --accent: #003a70;
+  --card-bg: #fff;
+  --status-bg: rgba(255, 255, 255, 0.8);
+}
+
 body {
   margin: 0;
   font-family: 'Segoe UI', sans-serif;
-  background-color: #f4f4f4;
-  color: #333;
-  transition: background-color 0.3s, color 0.3s;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: all 0.3s ease;
+  min-height: 100vh;
 }
 
-body.dark {
-  background-color: #1a1a1a;
-  color: #f0f0f0;
+/* Themes */
+body.theme-default {
+  --bg-color: #f4f4f4;
+  --text-color: #333;
+  --primary: #ffcb20;
+  --secondary: #ffe881;
+  --accent: rgba(125, 106, 55, 0.8);
+  --card-bg: #fff;
+  --status-bg: rgba(125, 106, 55, 0.8);
+}
+
+body.theme-dark {
+  --bg-color: #1a1a1a;
+  --text-color: #f0f0f0;
+  --primary: #d4af37;
+  --secondary: #6b8cae;
+  --accent: #2a4d6e;
+  --card-bg: #2d2d2d;
+  --status-bg: rgba(45, 45, 45, 0.8);
+}
+
+body.theme-forest {
+  --bg-color: #e8f5e9;
+  --text-color: #1b5e20;
+  --primary: #81c784;
+  --secondary: #4caf50;
+  --accent: #2e7d32;
+  --card-bg: #f1f8e9;
+  --status-bg: rgba(241, 248, 233, 0.8);
+}
+
+body.theme-ocean {
+  --bg-color: #e1f5fe;
+  --text-color: #0277bd;
+  --primary: #4fc3f7;
+  --secondary: #0288d1;
+  --accent: #01579b;
+  --card-bg: #e1f5fe;
+  --status-bg: rgba(225, 245, 254, 0.8);
+}
+
+body.theme-fire {
+  --bg-color: #ffebee;
+  --text-color: #c62828;
+  --primary: #ef5350;
+  --secondary: #f44336;
+  --accent: #b71c1c;
+  --card-bg: #ffcdd2;
+  --status-bg: rgba(255, 205, 210, 0.8);
 }
 
 .header {
   text-align: center;
-  padding: 1rem;
-}
-
-#status span {
-  margin: 0 1rem;
-}
-
-.controls {
-  text-align: center;
+  padding: 1.5rem;
+  background-color: var(--secondary);
+  color: white;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   margin-bottom: 1rem;
 }
 
-button,
-select {
-  margin: 0 0.5rem;
-  padding: 0.5rem 1rem;
+.header h1 {
+  margin: 0;
+  font-size: 2.2rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+#status {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin: 1rem 0;
+  padding: 0.8rem;
+  background-color: var(--status-bg);
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+#status span {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-weight: 600;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+button, select {
+  padding: 0.6rem 1.2rem;
   border-radius: 8px;
   border: none;
   cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.btn-primary {
+  background-color: var(--primary);
+  color: var(--accent);
+}
+
+.btn-secondary {
+  background-color: var(--secondary);
+  color: white;
+}
+
+.btn-special {
+  background-color: var(--accent);
+  color: white;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+select {
+  background-color: var(--card-bg);
+  color: var(--text-color);
+  border: 1px solid var(--secondary);
+}
+
+.theme-selector {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: 1rem;
+}
+
+.theme-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--card-bg);
+  color: var(--text-color);
+}
+
+.theme-btn.active {
+  transform: scale(1.1);
+  box-shadow: 0 0 0 2px var(--primary);
 }
 
 #game_grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-  gap: 10px;
-  max-width: 800px;
+  gap: 15px;
+  max-width: 600px;
   margin: auto;
   padding: 1rem;
+}
+
+/* Easy: 3 columns */
+#game_grid[data-difficulty="easy"] {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+/* Medium: 4 columns */
+#game_grid[data-difficulty="medium"] {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+/* Hard: 5 columns */
+#game_grid[data-difficulty="hard"] {
+  grid-template-columns: repeat(5, 1fr);
 }
 
 .card {
   perspective: 1000px;
   cursor: pointer;
+  aspect-ratio: 1/1;
 }
 
 .card.flip .inner-card {
@@ -55,13 +205,14 @@ select {
 .inner-card {
   position: relative;
   width: 100%;
-  padding-top: 100%;
+  height: 100%;
   transform-style: preserve-3d;
   transition: transform 0.6s;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
 }
 
-.front_face,
-.back_face {
+.front_face, .back_face {
   position: absolute;
   top: 0;
   left: 0;
@@ -71,14 +222,35 @@ select {
   border-radius: 10px;
 }
 
-/* BACK of card: Poké Ball (initially visible) */
 .back_face {
-  background: #ccc url('back.webp') center center / cover no-repeat;
+  background-color: var(--card-bg);
+  background-image: url(back.webp);
+  background-size: 70%;
+  background-position: center;
+  background-repeat: no-repeat;
+  border: 3px solid var(--secondary);
 }
 
-/* FRONT of card: Pokémon (hidden until flipped) */
 .front_face {
   background-size: cover;
   background-position: center;
-  transform: rotateY(180deg); /* flipped side */
+  transform: rotateY(180deg);
+  background-color: var(--card-bg);
+  border: 3px solid var(--primary);
+}
+
+@media (max-width: 600px) {
+  #status {
+    flex-wrap: wrap;
+    gap: 0.8rem;
+  }
+  
+  .controls {
+    flex-direction: column;
+  }
+  
+  .theme-selector {
+    margin-left: 0;
+    margin-top: 0.5rem;
+  }
 }

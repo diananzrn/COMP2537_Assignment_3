@@ -1,8 +1,8 @@
 // Game settings
 const settings = {
-  easy: { pairs: 3, time: 30 },
-  medium: { pairs: 6, time: 60 },
-  hard: { pairs: 10, time: 90 }
+  easy: { pairs: 3, time: 60, cols: 3 },
+  medium: { pairs: 6, time: 90, cols: 4 },
+  hard: { pairs: 10, time: 120, cols: 5 }
 };
 
 let gameState = {
@@ -45,6 +45,7 @@ function updateStatus() {
   $("#clicks").text(gameState.clicks);
   $("#matched").text(gameState.matched);
   $("#pairsLeft").text(gameState.totalPairs - gameState.matched);
+  $("#totalPairs").text(gameState.totalPairs);
   $("#time").text(gameState.timeLeft);
 }
 
@@ -72,8 +73,6 @@ function createCard(image, index) {
   `;
 }
 
-
-
 function renderCards(images) {
   const grid = $("#game_grid");
   grid.html(images.map((img, i) => createCard(img, i)).join(""));
@@ -95,7 +94,7 @@ function renderCards(images) {
         updateStatus();
         if (gameState.matched === gameState.totalPairs) {
           clearInterval(gameState.timer);
-          alert("You win!");
+          setTimeout(() => alert("Congratulations! You won!"), 500);
         }
       } else {
         gameState.canFlip = false;
@@ -125,15 +124,36 @@ async function startGame() {
     canFlip: true
   };
 
+  $("#game_grid").attr("data-difficulty", level);
   updateStatus();
-  const images = await getPokemonImages(pairs);
-  const shuffled = shuffle(images);
-  gameState.cards = shuffled;
-  renderCards(shuffled);
-  startTimer();
+  
+  // Show loading state
+  $("#game_grid").html('<div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading Pokémon...</div>');
+  
+  try {
+    const images = await getPokemonImages(pairs);
+    const shuffled = shuffle(images);
+    gameState.cards = shuffled;
+    renderCards(shuffled);
+    startTimer();
+  } catch (error) {
+    alert("Failed to load Pokémon images. Please try again.");
+    console.error(error);
+  }
 }
 
 $(document).ready(() => {
+  // Initialize game
+  updateStatus();
+  
+  // Theme switching
+  $(".theme-btn").click(function() {
+    const theme = $(this).data("theme");
+    $("body").removeClass().addClass(`theme-${theme}`);
+    $(".theme-btn").removeClass("active");
+    $(this).addClass("active");
+  });
+
   $("#start").click(startGame);
 
   $("#reset").click(() => {
@@ -141,16 +161,24 @@ $(document).ready(() => {
     startGame();
   });
 
-  $("#themeToggle").click(() => {
-    $("body").toggleClass("dark");
-  });
-
   $("#powerup").click(() => {
-    if (!gameState.canFlip) return;
+    if (!gameState.canFlip || gameState.flippedCards.length > 0) return;
+    
+    // Deduct 5 seconds for using power-up
+    gameState.timeLeft = Math.max(5, gameState.timeLeft - 5);
+    updateStatus();
+    
     $(".card").addClass("flip");
+    gameState.canFlip = false;
+    
+    setTimeout(() => {
+      $(".card:not(.flip)").addClass("flip");
+    }, 500);
+    
     setTimeout(() => {
       $(".card").removeClass("flip");
       gameState.flippedCards = [];
-    }, 2000);
+      gameState.canFlip = true;
+    }, 2500);
   });
 });
